@@ -25,25 +25,25 @@ driver = webdriver.Chrome(
 try:
     continue_and_exit = True
     driver.get(url='https://vk.com/')
-    time.sleep(3)
+    driver.implicitly_wait(3)
 
     # Осуществляет проверку cookie файла. При отсутствии вход и создание файла cookie.
     if not (os.path.exists(f'{conf.telephone}_cookie')):  # Файл cookie не существет.
         index_email = driver.find_element_by_id('index_email')
         index_email.send_keys(conf.telephone)
-        time.sleep(1)
+        driver.implicitly_wait(1)
         index_pass = driver.find_element_by_id('index_pass')
         index_pass.send_keys(conf.password)
-        time.sleep(1)
+        driver.implicitly_wait(1)
         index_pass.send_keys(Keys.ENTER)
-        time.sleep(5)
+        driver.implicitly_wait(1)
         pickle.dump(driver.get_cookies(), open(f'{conf.telephone}_cookie', 'wb'))
     else:  # Файл cookie существет.
         for cookie in pickle.load(open(f'{conf.telephone}_cookie', 'rb')):
             driver.add_cookie(cookie)
-        time.sleep(1)
+        driver.implicitly_wait(1)
         driver.refresh()
-        time.sleep(5)
+        driver.implicitly_wait(5)
 
     # Осуществляет переход по ссылке к музыке пользователя.
     l_aud = driver.find_element_by_id('l_aud')
@@ -51,7 +51,7 @@ try:
     href_aud = l_aud.get_attribute('href')
     href_my_aud = str(href_aud) + '?section=all'
     driver.get(url=href_my_aud)
-    time.sleep(3)
+    driver.implicitly_wait(3)
     list_music = driver.find_elements_by_class_name('audio_row')
     list_music_length = len(list_music)
 
@@ -59,11 +59,11 @@ try:
         # Получает рандомную музыку из плейлиста, и воспроизводит ее.
         random_music = random.randint(0, list_music_length)
         music = list_music[random_music]
-        time.sleep(3)
+        driver.implicitly_wait(6)
         music.click()  # Воспроизводит музыку.
         time.sleep(25)  # Воспроизводит музыку в течении 25 секунд.
         music.click()  # Останавливает музыку
-        time.sleep(3)
+        driver.implicitly_wait(6)
 
         # Получает исполнителя музыки.
         music_executor = music.find_element_by_class_name('audio_row__performers')
